@@ -1,0 +1,60 @@
+<template th:fragment="html">
+<div class="navTop"></div>
+<div class="event">
+	<div class="nav">
+		<p>官方赛事</p>
+	</div>
+	<template v-for="gt in gsTop">
+	<div class="owl" :style="'background-color:'+gt.color">
+		<div class="owlImg">
+			<img :src="'img/gameLogo/'+gt.id+'.jpg'">
+		</div>
+		<div class="right">
+			<div class="title">
+			<span>{{gt.name}}</span>
+			<a :href="gt.url" target="_blank">(官网)</a>
+			</div>
+			<div class="info">{{gt.info}}</div>
+			<div class="backDiv"></div>
+		</div>
+	</div>
+	<div class="showRanks" @click="ranks($event)" v-if="gt.rs!=null" :style="'background-color:'+gt.color">查看参赛队伍</div>
+	<div class="ranks background">
+		<div v-for="r in gt.rs" class="ranksOne">
+			<img :src="'img/ranksLogo/'+r.id+'.jpg'">
+			<div>{{r.name}}</div>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+	</template>
+	
+	<div class="nav">
+		<p>第三方赛事</p>
+	</div>
+	<template v-for="g in gs">
+	<div class="owl" :style="'background-color:'+g.color">
+		<div class="owlImg">
+			<img :src="'img/gameLogo/'+g.id+'.jpg'">
+		</div>
+		<div class="right">
+			<div class="title">
+				<span>{{g.name}}</span>
+				<a :href="g.url" target="_blank">(官网)</a>
+			</div>
+			<div class="info">{{g.info}}</div>
+			<div class="backDiv"></div>
+		</div>
+	</div>
+	<div class="showRanks" @click="ranks($event)" v-if="g.rs!=null" :style="'background-color:'+g.color">查看参赛队伍</div>
+	<div class="ranks background">
+		<div v-for="r in g.rs" class="ranksOne">
+			<img :src="'img/ranksLogo/'+r.id+'.jpg'">
+			<div>${{r.name}}</div>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+	</template>
+		
+	<div class="navBar">
+</div>
+</template>

@@ -1,0 +1,60 @@
+<template th:fragment="html">
+<div class="nav">
+	<p>赛事直播</p>
+	<button class="btn btn-default selectDate" id='dateTime' ref='dateTime'>
+		<span class="glyphicon glyphicon-calendar"></span>
+	</button>
+</div>
+
+<div class="game">
+	<div class="gameTime">
+		<ul class="backgroundB">
+    		<li @click="gameLeft" class="end left">
+		        <span>&laquo;</span>
+		    </li>
+		    <span class="date">
+				<li v-for="d,index in date" @click="gametableLoad(d, index)" :class="{'gameTimeClick':index==count}" class="active">
+					<span class="week">{{d | formatDateFilter('dddd')}}</span>
+					<span class="date">{{d | formatDateFilter('MMM Do')}}</span>
+				</li>
+		    </span>
+		    <li @click="gameRight" class="end right">
+		        <span>&raquo;</span>
+		    </li>
+		  </ul>	
+	</div>
+	<div class="gameContent">
+		<div v-if="0==gs.length" class="gameNull background">今天暂无赛事(*￣︶￣)~ 不如去打盘游戏吧~ </div>
+		<template v-for="g in gs">
+		<div class="gameTop backgroundC">
+			<span class="gameName"><a :href="g.url" target="_blank">{{g.name}}</a></span>
+			<span class="gameLive">直播平台：</span>
+			<span>
+				<a v-for="l in g.ls" :href="l.url" target="_blank">
+					<img :src="'img/webLogo/'+l.web.id+'.jpg'">
+				</a>
+			</span>
+		</div>
+		<table class="gameTable background">
+			<tbody>
+				<tr v-for="gb in g.gts">
+					<td class="time">
+						<span>{{gb.gameDate | formatDateFilter('MMM Do')}}</span>
+						<span>{{gb.gameDate | formatDateFilter('h:mm')}}</span>
+					</td>
+					<td class="tanksa">
+						<span>{{gb.ranks_a.name}}</span>
+						<img :src="'img/ranksLogo/'+gb.ranks_a.id+'.jpg'">
+					</td>
+					<td class="vs">vs</td>
+					<td class="tanksb">
+						<img :src="'img/ranksLogo/'+gb.ranks_b.id+'.jpg'">
+						<span>{{gb.ranks_b.name}}</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</template>
+	</div>
+</div>
+</template>

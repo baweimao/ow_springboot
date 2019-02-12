@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(编辑分类)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var id = getUrlParms("id");
+    var data4Vue = {
+        uri:'news',
+        listURL:'admin_news_list',
+        bean:{id:0},
+        file:null
+    };
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.get();
+        },
+        methods:{
+            get:function(){
+                var url = this.uri+"/"+id;;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.bean = result.data;
+                });
+            },
+            update:function(){
+                if(!checkEmpty(this.file,"图片"))
+                    return;
+                var url = this.uri+"/"+id+"/image";
+                var formData = new FormData();
+                formData.append("image",this.file);
+                axios.put(url,formData).then(function(response){
+                    location.href = vue.listURL;
+                });
+            },
+            getFile:function(event){
+                this.file = event.target.files[0];
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="admin_news_list">资讯</a></li>
+		<li><a href="#">修改图片</a></li>
+	</ul>
+	<div class="panel panel-warning editDiv">
+		<div class="panel-heading"></div>
+		<div class="panel-body">
+            <table class="editTable">
+                <tr>
+                    <td class="name">原图</td>
+                    <td><img height="80px" :src="'img/news/'+bean.id+'.jpg'"></td>
+                </tr>
+                <tr>
+                    <td class="name">新图</td>
+                    <td><input id="webPic" @change="getFile($event)" name="image" accept="image/*" type="file"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <input type="hidden" name="id" v-model="bean.id">
+                        <button type="submit" @click="update" class="btn btn-success">提交</button>
+                    </td>
+                </tr>
+            </table>
+		</div>
+	</div>
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>

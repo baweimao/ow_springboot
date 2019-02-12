@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(管理员登陆)"></head>
+<body>
+<script>
+$(function(){
+    var data4Vue = {
+        uri:'login',
+        user:{name:'', password:''}
+    }
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+        	$("input").keyup(function(){
+                $("div.loginErrorMessageDiv").hide();
+            });
+        },
+        methods:{
+            login:function(){
+                var url = this.uri;
+//                 alert();
+                if(0==this.user.name.length){
+                    $("span.errorMessage").html("请输入用户名");
+                    $("div.loginErrorMessageDiv").show();
+                    return;
+                };
+                if(0==this.user.password.length){
+                    $("span.errorMessage").html("请输入密码");
+                    $("div.loginErrorMessageDiv").show();
+                    return;
+                };
+                axios.post(url,this.user).then(function(response){
+                    var result = response.data;
+                    if(result.code==0){
+                        location.href="admin_category_list";
+                    }
+                    else{
+                        $("span.errorMessage").html(result.message);
+                        $("div.loginErrorMessageDiv").show();
+                    }
+                });
+            }
+        }
+    });
+});
+</script>
+
+<div id="workingArea" class="loginDiv">
+	<div class="loginErrorMessageDiv" hidden="hidden">
+    	<div class="alert alert-danger alert-dismissible" role="alert">
+        	<button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+        	<span class="errorMessage"></span>
+        </div>
+    </div>
+	<div class="panel panel-warning panelDiv">
+	<div class="panel-heading">管理员登陆</div>
+	<div class="panel-body">
+		<table class="addTable">
+			<tr>
+				<td>账号</td>
+				<td><input v-model="user.name" id="name" type="text" class="form-control"></td>
+			</tr>
+			<tr>
+				<td>密码</td>
+				<td><input v-model="user.password" id="password" type="password" class="form-control"></td>
+			</tr>
+			<tr>
+				<td class="submitTR" colspan="2" align="center">
+					<button type="submit" @click="login" class="btn btn-success">提交</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+	</div>
+</div>
+<div th:include="include/admin/adminFooter::html"></div>
+</body>
+</html>

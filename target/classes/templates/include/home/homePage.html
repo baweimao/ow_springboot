@@ -1,0 +1,150 @@
+<template th:fragment="html">
+<!-- <video autoplay loop poster="img/web/006Z6gaygy1ftpi4eodzmj31410qoanl.jpg" id="bgvid"> -->
+
+<!--   <source src="img/web/UTFB1J10S5VQ1525395185830.webm" type="video/webm"> -->
+
+<!--   <source src="img/web/UTFB1J10S5VQ1525395185830.mp4" type="video/mp4"> -->
+
+<!-- </video> -->
+<script>
+$(function(){
+	
+    var data4Vue = {
+	        uri:'forehomes',
+	        gametableUri:'foregametables',
+	        ns:[], //资讯集合
+	        cs:[], //分类集合
+	        ts:[], //类型集合
+	        gs:[], //游戏集合
+	        n:'', //左资讯值
+	        over:0, //右样式生效下标
+	        date:[1,2,3,4,5,6,7], //时间表日期数组
+	        count:0, //时间表上次点击位置
+	    };
+    
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        created:function(){
+
+        },
+        mounted:function(){
+        	//今日时间
+        	var now = new Date();
+        	
+        	this.load();
+            this.weekDate(now);
+            this.gametableLoad(now, this.count);
+
+            this.dateTime();
+//             this.clickTime();
+        },
+        methods:{
+            load:function(){
+               var url = this.uri;
+               axios.get(url).then(function(response){
+                   var result = response.data;
+                   vue.ns = result.data.ns;
+                   vue.n = vue.ns[0];
+                   vue.cs = result.data.cs;
+                   vue.ts = result.data.ts;
+               });
+            },
+            newsOver:function(n,index){
+        		vue.n = n;
+        		vue.over = index;
+            },
+            gametableLoad:function(date, index){
+            	//记录下标
+            	this.count = index;
+            	//时间戳
+            	var time = date.getTime();
+                var url = this.gametableUri+"?time="+time;
+               axios.get(url).then(function(response){
+                   var result = response.data;
+                   vue.gs = result.data;
+               });
+            },
+            weekDate:function(date){
+            	var temp = [];
+            	for(var i = 0; i < this.date.length; i ++){
+            		var d = new Date();
+					var time = date.getTime()
+            		d.setTime(time + i*(24*60*60*1000));
+            		temp[i] = d;
+            	};
+            	this.date = temp;
+            },
+            gameLeft:function(){
+            	var first = this.date[0];
+            	first.setDate(first.getDate()-1);
+            	this.weekDate(first);
+            	var countDate = this.date[this.count];
+            	this.gametableLoad(countDate, this.count);
+            },
+            gameRight:function(){
+            	var first = this.date[0];
+            	first.setDate(first.getDate()+1);
+            	this.weekDate(first);
+            	var countDate = this.date[this.count];
+            	this.gametableLoad(countDate, this.count);
+            },
+            peopleEnter:function(e){
+            	var el = e.target;
+            	$(el).children("div.oneRight").css({"left":"85px","opacity":"1"});
+            },
+            peopleLeave:function(e){
+            	var el = e.target;
+            	$(el).children("div.oneRight").css({"left":"0px","opacity":"0"});
+            },
+            weixinEnter:function(e){
+            	var el = e.target;
+            	var wxh = $(el).siblings(".weixinhao").val();
+    			$(el).siblings("p.oneTitle").html(wxh);
+            },
+            weixinLeave:function(e){
+            	var el = e.target;
+            	var p = $(el).siblings(".xinxi").val();
+    			$(el).siblings("p.oneTitle").html(p);
+            },
+            dateTime:function(){
+	            $.fn.datetimepicker.dates['zh-CN'] = {
+	    			days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+	    			daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+	    			daysMin:  ["日", "一", "二", "三", "四", "五", "六", "日"],
+	    			months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一", "十二"],
+	    			monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一", "十二"],
+	    			today: "今天",
+	    			suffix: [],
+	    			meridiem: ["上午", "下午"]
+	    		};
+	    		//日期选择器
+	            $("#dateTime").datetimepicker({
+	            	minView: "month",
+	            	language: 'zh-CN',
+	            	format: 'yyyy-mm-dd',
+	            	todayBtn:  1,
+	            	autoclose: 1,
+	            });
+	            $("#dateTime").datetimepicker().on('changeDate', function(ev){
+                	var date = $("#dateTime").data("datetimepicker").getDate();
+                	//下标归零
+                    vue.count = 0;
+                    vue.weekDate(date);
+            		vue.gametableLoad(date, vue.count);
+            	});
+            }
+        }
+    });
+});
+
+</script>
+<div class="backImg">
+	<div class="width">
+	<div th:include="include/home/homeNews::html"></div>
+	<div th:include="include/home/homeGame::html"></div>
+	<div th:include="include/home/homeWeb::html"></div>
+	<div th:include="include/home/homePeople::html"></div>
+	</div>
+</div>
+</template>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(人物管理)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var pid = getUrlParms("pid");
+    var data4Vue = {
+        uri:'socials',
+        beans:[],
+        bean:{id:0, url:'', web:{id:''}, people:{id:0}},
+        type:'',
+        people:'',
+        webs:[],
+    };
+    
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.list();
+            this.getPeople();
+            this.getWeb();
+        },
+        methods:{
+            getPeople:function(){
+                var url = "peoples/"+pid;
+                axios.get(url).then(function(response) {
+                    var result = response.data;
+                    vue.people = result.data;
+                    vue.type = vue.people.type;
+                });
+            },
+            getWeb:function(){
+                var url = "webs";
+                axios.get(url).then(function(response) {
+                    var result = response.data;
+                    vue.webs = result.data;
+                });
+            },
+            list:function(){
+                var url = "peoples/"+pid+"/"+this.uri;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.beans = result.data;
+                });
+            },
+            add:function(){
+                if(!checkEmpty(this.bean.web.id,"网站"))
+                    return;
+                if(!checkEmpty(this.bean.url,"网址"))
+                    return;
+                var url = this.uri;
+                this.bean.people.id = pid;
+                axios.post(url,this.bean).then(function(response){
+                    vue.list();
+                    vue.bean = {id:0, url:'', web:{id:0}, people:{id:0}};
+                    vue.file = null;
+                });
+            },
+            deleteBean:function(id){
+                if(!checkDeleteLink())
+                    return;
+                var url = this.uri+"/"+id;
+                axios.delete(url).then(function(response){
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list();
+                	}
+                });
+            },
+            up:function(id){
+                var url = this.uri+"/"+id+"/up";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            down:function(id){
+                var url = this.uri+"/"+id+"/down";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            getFile:function(event){
+                this.file = event.target.files[0];
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="admin_type_list">人物分类</a></li>
+		<li><a :href="'admin_people_list?tid='+type.id">{{type.name}}</a></li>
+		<li><a>{{people.name}}社交</a></li>
+	</ul>
+	<div class="listDiv">
+		<table class="table table-striped table-bordered table-hover  table-condensed">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>图标</th>
+					<th>站名</th>
+					<th>个人网址</th>
+					<th>编辑</th>
+					<th>删除</th>
+					<th colspan="2">排序</th>
+				</tr>
+			</thead>
+			<tbody>
+                <tr v-for="bean in beans">
+                    <td>{{bean.socialOrder}}</td>
+                    <td><img height="20px" :src="'img/webLogo/'+bean.web.id+'.jpg'"></td>
+                    <td>{{bean.web.name}}</td>
+                    <td>{{bean.url}}</td>
+                    <td>
+                        <a :href="'admin_social_edit?id='+bean.id"><span class="glyphicon glyphicon-edit"></span></a>
+                    </td>
+                    <td>
+                        <a @click="deleteBean(bean.id)" href="#"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                    <td>
+                        <a @click="up(bean.id)" href="#"><span class="glyphicon glyphicon-triangle-top"></span></a>
+                    </td>
+                    <td>
+                        <a @click="down(bean.id)" href="#"><span class="glyphicon glyphicon-triangle-bottom"></span></a>
+                    </td>
+                </tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="panel panel-warning addDiv">
+		<div class="panel-heading">新增社交(微信网址填写公众号)</div>
+		<div class="panel-body">
+			<table class="addTable">
+				<tr>
+					<td class="name">网站选择</td>
+					<td>
+						<select v-model="bean.web.id" class="form-control">
+							<option v-for="web in webs" :value="web.id">{{web.name}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="name">个人网址</td>
+					<td><input id="url" @keyup.enter="add" v-model.trim="bean.url" type="text" class="form-control"></td>
+				</tr>
+				<tr>
+					<td class="submitTR" colspan="2" align="center">
+						<button type="submit" @click="add" class="btn btn-success">提交</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>

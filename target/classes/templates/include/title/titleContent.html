@@ -1,0 +1,65 @@
+<template th:fragment="html">
+<div class="navTop"></div>
+<div class="title">
+<div class="nav">
+	<p>推荐阅读</p>
+</div>
+<div class="titleUp backgroundB">
+	<div class="left">
+		<a v-for="at,index in asTop" v-if="index==0" :href="'article?id='+at.id" @mouseenter="over($event)" @mouseleave="out($event)" target="_blank">
+			<img :src="at.firstImgUrl">
+			<div class="background"></div>
+			<p>{{at.title}}</p>
+			<div class="hoverUp"></div>
+			<div class="hoverDown"></div>
+		</a>
+	</div>
+	<div class="right">
+		<div class="rightUp">
+			<a v-for="at,index in asTop" v-if="index==1" :href="'article?id='+at.id" @mouseenter="over($event)" @mouseleave="out($event)" target="_blank">
+				<img :src="at.firstImgUrl">
+				<div class="background"></div>
+				<p>{{at.title}}</p>
+				<div class="hoverUp"></div>
+				<div class="hoverDown"></div>
+			</a>
+		</div>
+		<div class="rightDown">
+			<a v-for="at,index in asTop" v-if="index==2" :href="'article?id='+at.id" @mouseenter="over($event)" @mouseleave="out($event)" target="_blank">
+				<img :src="at.firstImgUrl">
+				<div class="background"></div>
+				<p>{{at.title}}</p>
+				<div class="hoverUp"></div>
+				<div class="hoverDown"></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="nav">
+	<p>最新文章</p>
+</div>
+<div class="titleContent background">
+	<div v-for="a in as" class="titleOne">
+		<div class="left">
+			<a :href="'article?id='+a.id" target="_blank">{{a.title}}</a>
+			<p>{{a.remark}}</p>
+			<div class="time">
+				<span class="glyphicon glyphicon-time"></span>
+				<span>{{a.articleDate | formatDateFilter('MMM Do')}}</span>
+			</div>
+		</div>
+		<div class="right">
+			<a :href="'article?id='+a.id" @mouseenter="over($event)" @mouseleave="out($event)" target="_blank">
+				<img :src="a.firstImgUrl">
+				<div class="hoverUp"></div>
+				<div class="hoverDown"></div>
+			</a>
+			<div style="clear: both;"></div>
+		</div>
+	</div>
+	<div class="button background">
+		<button id="button" @click="loading" type="button" class="btn btn-default load">继续加载</button>
+	</div>
+</div>
+</div>
+</template>

@@ -1,0 +1,22 @@
+<template th:fragment="html">
+<div class="nav">
+	<p>网站导航</p>
+</div>
+<div class="web background">
+	<template v-for="c in cs">
+		<div class="webLeft">
+		<a>{{c.name}}</a>
+		</div>
+		<div class="webRight">
+			<div v-for="w in c.ws" class="webOne">
+				<a :href="w.url" target="_blank">
+					<img :src="'img/webLogo/'+w.id+'.jpg'">
+					{{w.name}}
+				</a>
+			</div>
+		</div>
+		<div style="clear: both;"></div>
+<!-- 		<div class="line"></div> -->
+	</template>
+</div>
+</template>

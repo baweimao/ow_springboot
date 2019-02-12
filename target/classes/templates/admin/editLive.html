@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(编辑直播)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var id = getUrlParms("id");
+    var data4Vue = {
+        uri:'lives',
+        listURL:'admin_live_list',
+        bean:{id:0, url:'', game:{id:0}, web:{id:0}},
+        game:''
+    };
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.get();
+        },
+        methods:{
+            get:function(){
+                var url = this.uri+"/"+id;;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.bean = result.data;
+                    vue.game = vue.bean.game;
+                });
+            },
+            update:function(){
+                if(!checkEmpty(this.bean.url,"网址"))
+                    return;
+                var url = this.uri;
+                axios.put(url,this.bean).then(function(response){
+                    location.href = vue.listURL+"?gid="+vue.game.id;
+                });
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="admin_game_list">赛事</a></li>
+		<li><a :href="'admin_live_list?gid='+game.id">{{game.name}}直播</a></li>
+		<li><a href="#">编辑直播</a></li>
+	</ul>
+
+	<div class="panel panel-warning editDiv">
+		<div class="panel-heading">编辑赛事直播</div>
+		<div class="panel-body">
+            <table class="addTable">
+                <tr>
+                    <td class="name">网址</td>
+                    <td><input id="url" @keyup.enter="update" v-model.trim="bean.url" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="submitTR" colspan="2" align="center">
+                        <button type="submit" @click="update" class="btn btn-success">提交</button>
+                    </td>
+                </tr>
+            </table>
+		</div>
+	</div>
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>

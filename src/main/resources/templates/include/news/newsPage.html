@@ -1,0 +1,78 @@
+<template th:fragment="html">
+<script>
+$(function(){
+	var data4Vue = {
+		uri:'forenews',
+		as:[],
+		page:[],
+		ns:[],
+		allSize:0, //信息总数
+		count:8, //显示几条信息
+		isShow:true, //是否显示文章推荐
+		left:"" //文章推荐左侧距离
+	};
+	
+	var vue = new Vue({
+		el:'#workingArea',
+		data:data4Vue,
+		mounted:function(){
+			this.load();
+			this.fixed();
+			window.addEventListener('resize', this.fixed);
+			window.addEventListener('scroll', this.scroll);
+		},
+		methods:{
+			load:function(){
+				var url = this.uri+"?count="+this.count;
+				axios.get(url).then(function(response){
+					var result = response.data;
+					vue.as = result.data.as;
+					vue.page = result.data.page;
+					vue.ns = vue.page.content;
+					vue.allSize = result.data.allSize;
+					if(vue.count >= vue.allSize){
+						$("button").html("已到结尾");
+						$("button").attr("disabled", "disabled");
+					}
+				});
+			},// 继续加载
+			loading:function(){
+				this.count += 8;
+				this.load();
+			},// 窗口宽度判断位置
+			fixed:function(){
+				var el = this.$refs.newArticle;
+				var width = document.documentElement.clientWidth;
+				var left = (width-1024)/2+774;
+
+				if((width-1024)<0){
+					this.isShow = false;
+				}
+				else{
+					this.left = left+"px";
+					this.isShow = true;
+				}
+			},// 滚动判断隐藏
+			scroll:function(){
+				this.fixed();
+				var el = this.$refs.newsArticle;
+				var h = el.offsetHeight;
+				h += 100;
+				var p = document.documentElement.scrollTop;
+				
+				if(h <= p){
+				$(el).addClass("newArticleFixed");
+				}else{
+				$(el).removeClass("newArticleFixed");
+				}
+			}
+		}
+	});
+});
+</script>
+<div class="backImg">
+	<div class="width">
+		<div th:replace="include/news/newsContent::html"></div>
+	</div>
+</div>
+</template>

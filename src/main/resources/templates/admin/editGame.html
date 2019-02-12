@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(分类管理)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var id = getUrlParms("id");
+    var data4Vue = {
+        uri:'games',
+        listURL:'admin_game_list',
+        bean:{id:0, name:'', url:'',up:'', color:'',info:''}
+    };
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.get();
+            $('#name').on('input',checkEn(10));
+        },
+        methods:{
+            get:function(){
+                var url = this.uri+"/"+id;;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.bean = result.data;
+                });
+            },
+            update:function(){
+            	if(!checkEmpty(this.bean.up,"类型"))
+                    return;
+                if(!checkEmpty(this.bean.name,"赛事名"))
+                    return;
+                if(!checkEmpty(this.bean.url,"网址"))
+                    return;
+                if(!checkEmpty(this.bean.color,"颜色"))
+                    return;
+                var col = $("#color").val();
+                if(col.charAt(0)!="#"){
+                    alert("请重新确认背景色格式#000000");
+                    return;
+                }
+                if(col.length!=7){
+                    alert("请重新确认背景色格式#000000");
+                    return;
+                }
+                if(!checkEmpty(this.bean.info,"介绍"))
+                    return;
+                var url = this.uri;
+                axios.put(url,this.bean).then(function(response){
+                    location.href = vue.listURL;
+                });
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="admin_game_list">赛事</a></li>
+		<li><a href="#">编辑赛事</a></li>
+	</ul>
+
+	<div class="panel panel-warning editDiv">
+		<div class="panel-heading">编辑赛事</div>
+		<div class="panel-body">
+            <table class="addTable">
+                <tr>
+                    <td class="name">赛事名</td>
+                    <td><input id="name" @keyup.enter.trim="update" v-model="bean.name" type="text" placeholder="10字以内" maxlength="10" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">赛事介绍</td>
+                    <td><textarea wrap="virtual" @keyup.enter.trim="update" v-model="bean.info" type="text" placeholder="272字以内" maxlength="272" class="form-control">${g.info}</textarea></td>
+                </tr>
+                <tr>
+                    <td class="name">网址</td>
+                    <td><input id="url" @keyup.enter.trim="update" v-model="bean.url" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">背景色</td>
+                    <td><input id="color" @keyup.enter.trim="update" v-model="bean.color" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">类型选择</td>
+                    <td>
+                        <select v-model="bean.up"  class="form-control">
+                            <option value="0">官方赛事</option>
+                            <option value="1">第三方赛事</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="submitTR" colspan="2" align="center">
+                        <button type="submit" @click="update" class="btn btn-success">提交</button>
+                    </td>
+                </tr>
+            </table>
+		</div>
+	</div>
+	
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>

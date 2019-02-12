@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(分类管理)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var id = getUrlParms("id");
+    var data4Vue = {
+        uri:'gametables',
+        listURL:'admin_gametable_list',
+        bean:{id:0,gameDate:''},
+        game:'',
+        strDate:''
+    };
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.get();
+            this.getRank();
+        },
+        methods:{
+            get:function(){
+                var url = this.uri+"/"+id;;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.bean = result.data;
+                    vue.game = vue.bean.game;
+                    formatString = 'YYYY-MM-DD HH:mm';
+                    vue.strDate =  moment(vue.bean.gameDate).format(formatString);
+                });
+            },
+            update:function(){
+                if(!checkEmpty(this.strDate,"时间"))
+                    return;
+                this.strDate = this.strDate.replace(/-/g,"/");
+                var date =  new Date(this.strDate);
+                this.bean.gameDate = date;
+                var url = this.uri;
+                axios.put(url,this.bean).then(function(response){
+                    location.href = vue.listURL+"?gid="+vue.game.id;
+                });
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="admin_game_list">赛事</a></li>
+		<li><a :href="'admin_gametable_list?gid='+game.id">{{game.name}}赛事表</a></li>
+		<li><a>编辑赛事表</a></li>
+	</ul>
+
+	<div class="panel panel-warning editDiv">
+		<div class="panel-heading">编辑赛事表</div>
+		<div class="panel-body">
+            <table class="editTable">
+                <tr>
+                    <td class="name">日期时间</td>
+                    <td><input id="strDate" @keyup.enter="update" v-model.trim="strDate" pattern="yyyy-MM-dd HH:mm" placeholder="请按照“2018-09-28 14:30”格式输入" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="submitTR" colspan="2" align="center">
+                        <button type="submit" @click="update" class="btn btn-success">提交</button>
+                    </td>
+                </tr>
+            </table>
+		</div>
+	</div>
+	
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>

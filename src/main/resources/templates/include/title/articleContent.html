@@ -1,0 +1,26 @@
+<template th:fragment="html">
+<div class="article">
+	<div class="null"></div>
+	<h1>{{a.title}}</h1>
+	<time>
+		<span class="glyphicon glyphicon-time"></span>
+		{{a.articleDate | formatDateFilter('MMM Do')}}
+	</time>
+	<a>来源：</a>
+	<a class="url" :href="a.url" target="_blank">{{a.web.name}}</a>
+	<div v-html="a.content" class="content"></div>
+	
+	<div class="changyan">
+		<!--PC版-->
+		<div id="SOHUCS" sid="请将此处替换为配置SourceID的语句"></div>
+		<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+		<script type="text/javascript">
+		window.changyan.api.config({
+		appid: 'cytV3PA8x',
+		conf: 'prod_07ef73d658e9b47f83a51e29d6da7801'
+		});
+		</script>
+	</div>
+	<div class="navBar"></div>
+</div>
+</template>

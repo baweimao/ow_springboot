@@ -1,0 +1,39 @@
+<template th:fragment="html">
+<script>
+$(function(){
+	var data4Vue = {
+		uri:'foregame',
+		gsTop:[],
+		gs:[],
+		click:true
+	};
+	
+	var vue = new Vue({
+		el:'#workingArea',
+		data:data4Vue,
+		mounted:function(){
+			this.load();
+		},
+		methods:{
+			load:function(){
+				var url = this.uri;
+				axios.get(url).then(function(response){
+					var result = response.data;
+					vue.gs = result.data.gs;
+					vue.gsTop = result.data.gsTop;
+				});
+			},
+			ranks:function(e){
+				var el = e.target.nextElementSibling;
+				$(el).toggle();			
+			}
+		}
+	});
+});
+</script>
+<div class="backImg">
+	<div class="width">
+		<div th:replace="include/game/gameContent::html"></div>
+	</div>
+</div>
+</template>

@@ -1,0 +1,57 @@
+<template th:fragment="html">
+<script>
+$(function() {
+	var data4Vue = {
+		uri:'forearticles',
+		asTop:[],
+		page:[],
+		as:[],
+		allSize:0, //信息总数
+		count:8 //显示几条信息
+	};
+	
+	var vue = new Vue({
+		el:'#workingArea',
+		data:data4Vue,
+		mounted:function(){
+			this.load();
+		},
+		methods:{
+			load:function(){
+				var url = this.uri+"?count="+this.count;
+				axios.get(url).then(function(response){
+					var result = response.data;
+					vue.asTop = result.data.asTop;
+					vue.page = result.data.page;
+					vue.as = vue.page.content;
+					vue.allSize = result.data.allSize;
+					if(vue.count >= vue.allSize){
+						$("button").html("已到结尾");
+						$("button").attr("disabled", "disabled");
+					}
+				});
+			},// 继续加载
+			loading:function(){
+				this.count += 8;
+				this.load();
+			},
+			over:function(e){
+				var el = e.target;
+				$(el).children("div.hoverUp").show();
+				$(el).children("div.hoverDown").css({"width":"100%"});
+			},
+			out:function(e){
+				var el = e.target;
+				$(el).children("div.hoverUp").hide();
+				$(el).children("div.hoverDown").css({"width":"0"});
+			}
+		}
+	});
+});
+</script>
+<div class="backImg">
+	<div class="width">
+		<div th:replace="include/title/titleContent::html"></div>
+	</div>
+</div>
+</template>
