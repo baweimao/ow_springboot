@@ -26,7 +26,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
 		HttpSession session = request.getSession();
         String contextPath=session.getServletContext().getContextPath();
         
-        //用于放行的字符串数组
+        //用于校验的字符串数组
         String[] requireAuthPages = new String[]{
                 "admin",
                 "categories",
@@ -44,11 +44,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
  
         String uri = request.getRequestURI();
         uri = StringUtils.remove(uri, contextPath);
-        String page = StringUtils.substringAfterLast(uri,"/" );
+        String page = StringUtils.substringAfter(uri,"/" );
         if(begindWith(page, requireAuthPages)){
         	Subject subject = SecurityUtils.getSubject();
         	if(!subject.isAuthenticated()) {
-        		response.sendRedirect("login");
+        		response.sendRedirect("/login");
                 return false;
             }
         }

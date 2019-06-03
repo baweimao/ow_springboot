@@ -1,0 +1,40 @@
+<template th:fragment="html">
+<div class="navTop"></div>
+<div class="news">
+	<div v-show="isShow" :style="{'left':left}" class="newArticle" ref="newsArticle">
+		<p class="newArticleTitle background">推荐文章</p>
+		<div class="newArticleContent background">
+			<a v-for="a in as" :href="'article?id='+a.id" class="title" target="_black">{{a.title}}</a>
+		</div>
+		<div class="newArticleBottom background"></div>
+	</div>
+	<div class="line">
+		<div v-for="n in ns" class="newsOne">
+			<div class="leftNews">
+				<div class="time">{{n.newsDate | formatDateFilter('MMM Do')}}</div>
+				<div class="web">{{n.web.name}}</div>
+			</div>
+			<div class="middleNews">
+				<img class="img-circle" :src="'img/webLogo/'+n.web.id+'.jpg'">
+			</div>
+			<div class="rightNews background">
+				<h2 class="rightTitle">{{n.title}}</h2>
+				<div class="rightContent">
+					<div v-if="n.img==1" class="rightImg">
+						<img :src="'img/news/'+n.id+'.jpg'">
+					</div>
+					<p>{{n.content}}</p>
+					<div class="source">
+						<a :href="n.url" class="source" target="_blank">{{n.web.name}}</a>
+						<a class="source">来源：</a>
+					</div>
+				</div>
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div class="button">
+			<button type="button" @click="loading" class="btn btn-default load">继续加载</button>
+		</div>
+	</div>
+</div>
+</template>

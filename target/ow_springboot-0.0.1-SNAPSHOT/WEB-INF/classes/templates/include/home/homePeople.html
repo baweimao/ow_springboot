@@ -1,0 +1,29 @@
+<template th:fragment="html">
+<template v-for="t in ts">
+	<div class="nav">
+		<p>{{t.name}}</p>
+	</div>
+	<div class="people background">
+		<div v-for="p in t.ps" class="one" @mouseenter="peopleEnter($event)" @mouseleave="peopleLeave($event)">
+			<img class="oneImg img-circle" :src="'img/peopleLogo/'+p.id+'.jpg'">
+			<div class="oneRight">
+				<p class="oneTitle">{{p.info}}</p>
+				<template v-for="s,index in p.ss" v-if="index<8">
+					<a v-if="s.web.id==44" class="oneLogoA weixin" target="_blank" @mouseenter="weixinEnter($event)" @mouseleave="weixinLeave($event)">
+						<img class="oneLogo img-circle" :src="'img/webLogo/'+s.web.id+'.jpg'">
+					</a>
+					<a v-if="s.web.id!=44" class="oneLogoA" :href="s.url" target="_blank">
+						<img class="oneLogo img-circle" :src="'img/webLogo/'+s.web.id+'.jpg'">
+					</a>
+					<input v-if="s.web.id==44" class="weixinhao" :value="s.url" hidden="hidden">
+					<input v-if="s.web.id==44" class="xinxi" :value="p.info" hidden="hidden">
+				</template>
+			</div>
+			<div class="oneName">{{p.name}}</div>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+</template>
+<div class="navBar">
+
+</template>

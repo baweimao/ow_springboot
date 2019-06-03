@@ -1,0 +1,34 @@
+<template th:fragment="html">
+<script>
+$(function() {
+	var id = getUrlParms("id");
+	var data4Vue={
+		uri:'forepage',
+		info:''
+	};
+	
+	var vue = new Vue({
+		el:'#workingArea',
+		data:data4Vue,
+		mounted:function(){
+			this.load();
+		},
+		methods:{
+			load:function(){
+				var url = this.uri+"/"+id;
+				axios.get(url).then(function(response){
+					var result = response.data;
+					vue.info = result.data;
+				});
+			}
+		}
+	});
+});
+</script>
+<title>ga</title>
+<div class="backImg">
+	<div class="width">
+		<div th:replace="include/info/infoContent::html"></div>
+	</div>
+</div>
+</template>

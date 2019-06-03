@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/fore/header::html(文章)"></head>
+<body>
+<div id="workingArea">
+    <div th:include="include/fore/navigator::html"></div>
+    <div th:include="include/title/titlePage::html"></div>
+    <div th:replace="include/fore/footer::html"></div>
+</div>
+</body>
+</html>

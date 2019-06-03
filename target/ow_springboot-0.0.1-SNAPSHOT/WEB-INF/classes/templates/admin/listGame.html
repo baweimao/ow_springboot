@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(赛事管理)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var data4Vue = {
+        uri:'games',
+        gsTop:[],
+        gs:[],
+        bean:{id:0, name:'', url:'',up:'', color:'',info:''},
+        file:null
+    };
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.list();
+            $('#name').on('input',checkEn(10));
+        },
+        methods:{
+            list:function(){
+                var url = this.uri;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.gsTop = result.data.gsTop;
+                    vue.gs = result.data.gs;
+                });
+            },
+            add:function(){
+            	if(!checkEmpty(this.bean.up,"类型"))
+                    return;
+                if(!checkEmpty(this.bean.name,"赛事名"))
+                    return;
+                if(!checkEmpty(this.bean.url,"网址"))
+                    return;
+                if(!checkEmpty(this.bean.color,"颜色"))
+                    return;
+                var col = $("#color").val();
+                if(col.charAt(0)!="#"){
+                    alert("请重新确认背景色格式#000000");
+                    return;
+                }
+                if(col.length!=7){
+                    alert("请重新确认背景色格式#000000");
+                    return;
+                }
+                if(!checkEmpty("gamePic","图标"))
+                    return;
+                if(!checkEmpty(this.bean.info,"介绍"))
+                    return;
+                var url = this.uri;
+                var formData = new FormData();
+                formData.append("image",this.file);
+                formData.append("name",this.bean.name);
+                formData.append("url",this.bean.url);
+                formData.append("color",this.bean.color);
+                formData.append("info",this.bean.info);
+                axios.post(url,formData).then(function(response){
+                    vue.list();
+                    vue.bean = {id:0, name:'', url:'', color:'',info:''};
+                    vue.file = null;
+                });
+            },
+            deleteBean:function(id){
+                if(!checkDeleteLink())
+                    return;
+                var url = this.uri+"/"+id;
+                axios.delete(url).then(function(response){
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list();
+                	}
+                });
+            },
+            show:function(id){
+                var url = this.uri+"/"+id+"/show";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            hide:function(id){
+                var url = this.uri+"/"+id+"/hide";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            top:function(id){
+                var url = this.uri+"/"+id+"/top";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            art:function(id){
+                var url = this.uri+"/"+id+"/art";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            up:function(id){
+                var url = this.uri+"/"+id+"/up";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            down:function(id){
+                var url = this.uri+"/"+id+"/down";
+                axios.get(url).then(function(response){
+                    vue.list();
+                });
+            },
+            getFile:function(event){
+                this.file = event.target.files[0];
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="#">赛事</a></li>
+	</ul>
+	<div class="listDiv">
+		<p class="bg-primary">官方</p>
+		<table class="table table-striped table-bordered table-hover  table-condensed">
+			<thead>
+				<tr>
+					<th>类型</th>
+					<th>序号/状态</th>
+					<th>图标</th>
+					<th>赛事名</th>
+					<th>赛事介绍</th>
+					<th>网址</th>
+					<th>背景色</th>
+					<th>直播</th>
+					<th>队伍</th>
+					<th>赛事表</th>
+					<th>修改图片</th>
+					<th>编辑</th>
+					<th>删除</th>
+					<th>隐藏</th>
+					<th colspan="2">排序</th>
+				</tr>
+			</thead>
+			<tbody>
+                <tr v-for="bean in gsTop">
+                    <td>官方</td>
+                    <td v-if="bean.gameOrder==0" style="color: red;">已隐藏</td>
+                    <td v-if="bean.gameOrder!=0">{{bean.gameOrder}}</td>
+                    <td><img height="20px" :src="'img/gameLogo/'+bean.id+'.jpg'"></td>
+                    <td>{{bean.name}}</td>
+                    <td>{{bean.info}}</td>
+                    <td>{{bean.url}}</td>
+                    <td>{{bean.color}}</td>
+                    <td>
+                        <a :href="'admin_live_list?gid='+bean.id"><span class="glyphicon glyphicon-facetime-video"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_ranks_list?gid='+bean.id"><span class="glyphicon glyphicon-user"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_gametable_list?gid='+bean.id"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_game_image?id='+bean.id"><span class="glyphicon glyphicon-picture"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_game_edit?id='+bean.id"><span class="glyphicon glyphicon-edit"></span></a>
+                    </td>
+                    <td>
+                        <a @click="deleteBean(bean.id)" href="#"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder==0">
+                        <a @click="show(bean.id)" href="#"><span class="glyphicon glyphicon-eye-close"></a>
+                    </td>
+                    <td v-if="bean.gameOrder!=0">
+                        <a @click="hide(bean.id)" href="#"><span class="glyphicon glyphicon-eye-open"></a>
+                    </td>
+                    <td v-if="bean.gameOrder==0">
+                        <a style="color: #DCDCDC;"><span class="glyphicon glyphicon-triangle-top"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder==0">
+                        <a style="color: #DCDCDC;"><span class="glyphicon glyphicon-triangle-bottom"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder!=0">
+                        <a @click="up(bean.id)" href="#"><span class="glyphicon glyphicon-triangle-top"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder!=0">
+                        <a @click="down(bean.id)" href="#"><span class="glyphicon glyphicon-triangle-bottom"></span></a>
+                    </td>
+                </tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="listDiv">
+		<p class="bg-primary">第三方</p>
+		<table class="table table-striped table-bordered table-hover  table-condensed">
+			<thead>
+				<tr>
+					<th>类型</th>
+					<th>序号/状态</th>
+					<th>图标</th>
+					<th>赛事名</th>
+					<th>赛事介绍</th>
+					<th>网址</th>
+					<th>背景色</th>
+					<th>直播</th>
+					<th>队伍</th>
+					<th>赛事表</th>
+					<th>修改图片</th>
+					<th>编辑</th>
+					<th>删除</th>
+					<th>隐藏</th>
+					<th colspan="2">排序</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="bean in gs">
+                    <td>官方</td>
+                    <td v-if="bean.gameOrder==0" style="color: red;">已隐藏</td>
+                    <td v-if="bean.gameOrder!=0">{{bean.gameOrder}}</td>
+                    <td><img height="20px" :src="'img/gameLogo/'+bean.id+'.jpg'"></td>
+                    <td>{{bean.name}}</td>
+                    <td>{{bean.info}}</td>
+                    <td>{{bean.url}}</td>
+                    <td>{{bean.color}}</td>
+                    <td>
+                        <a :href="'admin_live_list?gid='+bean.id"><span class="glyphicon glyphicon-facetime-video"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_ranks_list?gid='+bean.id"><span class="glyphicon glyphicon-user"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_gametable_list?gid='+bean.id"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_game_image?id='+bean.id"><span class="glyphicon glyphicon-picture"></span></a>
+                    </td>
+                    <td>
+                        <a :href="'admin_game_edit?id='+bean.id"><span class="glyphicon glyphicon-edit"></span></a>
+                    </td>
+                    <td>
+                        <a @click="deleteBean(bean.id)" href="#"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder==0">
+                        <a @click="show(bean.id)" href="#"><span class="glyphicon glyphicon-eye-close"></a>
+                    </td>
+                    <td v-if="bean.gameOrder!=0">
+                        <a @click="hide(bean.id)" href="#"><span class="glyphicon glyphicon-eye-open"></a>
+                    </td>
+                    <td v-if="bean.gameOrder==0">
+                        <a style="color: #DCDCDC;"><span class="glyphicon glyphicon-triangle-top"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder==0">
+                        <a style="color: #DCDCDC;"><span class="glyphicon glyphicon-triangle-bottom"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder!=0">
+                        <a @click="up(bean.id)" href="#"><span class="glyphicon glyphicon-triangle-top"></span></a>
+                    </td>
+                    <td v-if="bean.gameOrder!=0">
+                        <a @click="down(bean.id)" href="#"><span class="glyphicon glyphicon-triangle-bottom"></span></a>
+                    </td>
+                </tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="panel panel-warning addDiv">
+		<div class="panel-heading">新增赛事 (图片尺寸400*340)</div>
+		<div class="panel-body">
+            <table class="addTable">
+                <tr>
+                    <td class="name">类型选择</td>
+                    <td>
+                        <select v-model="bean.up" class="form-control">
+                            <option value="0">官方赛事</option>
+                            <option value="1">第三方赛事</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">赛事名</td>
+                    <td><input id="name" @keyup.enter.trim="add" v-model="bean.name" type="text" placeholder="10字以内" maxlength="10" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">赛事介绍</td>
+                    <td><textarea wrap="virtual" id="info" @keyup.enter.trim="add" v-model="bean.info" type="text" placeholder="272字以内" maxlength="272" class="form-control"></textarea></td>
+                </tr>
+                <tr>
+                    <td class="name">网址</td>
+                    <td><input id="url" @keyup.enter.trim="add" v-model="bean.url" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">背景色</td>
+                    <td><input id="color" @keyup.enter.trim="add" v-model="bean.color" placeholder="输入格式#000000" name="color" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">图标</td>
+                    <td><input id="gamePic" @change="getFile($event)" name="image" accept="image/*" type="file"/></td>
+                </tr>
+                <tr>
+                    <td class="submitTR" colspan="2" align="center">
+                        <button type="submit" @click="add" class="btn btn-success">提交</button>
+                    </td>
+                </tr>
+            </table>
+		</div>
+	</div>
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>

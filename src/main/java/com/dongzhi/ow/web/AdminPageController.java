@@ -27,8 +27,13 @@ import com.dongzhi.ow.util.Result;
 public class AdminPageController {
 	
 	@GetMapping(value="/login")
-	public String admin() {
+	public String login() {
 		return "admin/loginPage";
+	}
+	
+	@GetMapping(value="/admin")
+	public String admin() {
+		return "redirect:admin_category_list";
 	}
 	
 	@GetMapping(value="/logout")

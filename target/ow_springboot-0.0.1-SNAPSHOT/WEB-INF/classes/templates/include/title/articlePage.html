@@ -1,0 +1,34 @@
+<template th:fragment="html">
+<script>
+$(function(){
+	var id = getUrlParms("id");
+	var data4Vue = {
+		uri:'forearticles',
+		a:''
+	};
+	
+	var vue = new Vue({
+		el:'#workingArea',
+		data:data4Vue,
+		mounted:function(){
+			this.load();
+		},
+		methods:{
+			load:function(){
+				var url = this.uri+"/"+id;
+				axios.get(url).then(function(response){
+					var result = response.data;
+					vue.a = result.data;
+				});
+			}
+		}
+	});
+});
+</script>
+<div class="backImg">
+	<div class="widthB">
+		<div th:replace="include/title/articleContent::html"></div>
+	</div>
+</div>
+</template>
+

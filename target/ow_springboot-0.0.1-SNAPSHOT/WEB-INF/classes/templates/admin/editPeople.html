@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html(分类管理)"></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+$(function(){
+    var id = getUrlParms("id");
+    var data4Vue = {
+        uri:'peoples',
+        listURL:'admin_people_list',
+        bean:{id:0, name:'', info:'', type:{id:0}},
+        type:'',
+        ts:[],
+        oldTid:''
+    };
+
+    var vue = new Vue({
+        el:'#workingArea',
+        data:data4Vue,
+        mounted:function(){
+            this.get();
+            this.getType();
+            $('#name').on('input',checkEn(12));
+        },
+        methods:{
+            getType:function(){
+                var url = "types";
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.ts = result.data;
+                });
+            },
+            get:function(){
+                var url = this.uri+"/"+id;
+                axios.get(url).then(function(response){
+                    var result = response.data;
+                    vue.bean = result.data;
+                    vue.type = vue.bean.type;
+                    vue.oldTid = vue.type.id;
+                });
+            },
+            update:function(){
+                if(!checkEmpty(this.bean.name,"姓名"))
+                    return;
+                if(!checkEmpty(this.bean.info,"介绍"))
+                    return;
+                var url = this.uri+"?oldTid="+this.oldTid;
+                axios.put(url,this.bean).then(function(response){
+                    location.href = vue.listURL+"?tid="+vue.type.id;
+                });
+            }
+        }
+    });
+});
+</script>
+<div id="workingArea" class="div">
+	<ul class="breadcrumb">
+		<li><a href="admin_type_list">人物分类</a></li>
+		<li><a :href="'admin_people_list?tid='+type.id">{{type.name}}</a></li>
+		<li><a href="#">编辑人物</a></li>
+	</ul>
+	<div class="panel panel-warning editDiv">
+		<div class="panel-heading">编辑人物</div>
+		<div class="panel-body">
+            <table class="editTable">
+                <tr>
+                    <td class="name">姓名</td>
+                    <td><input id="name" @keyup.enter="update" v-model.trim="bean.name" type="text" placeholder="中文12字以内，英文24字以内" maxlength="12" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">介绍</td>
+                    <td><input id="info" @keyup.enter="update" v-model.trim="bean.info" placeholder="10字以内" maxlength="10" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td class="name">类型选择</td>
+                    <td>
+                        <select v-model="bean.type.id" class="form-control">
+                            <option v-for="t in ts" :value="t.id">{{t.name}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <input type="hidden" name="id" v-model.trim="bean.id"/>
+                        <!-- <input type="hidden" name="peopleOrder" v-model.trim="bean.peopleOrder"/> -->
+                        <button type="submit" @click="update" class="btn btn-success">提交</button>
+                    </td>
+                </tr>
+            </table>
+		</div>
+	</div>
+</div>
+<div th:replace="include/admin/adminFooter::html"></div>
+</body>
+</html>
