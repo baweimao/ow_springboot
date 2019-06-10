@@ -49,8 +49,9 @@ $(function(){
 </script>
 <div id="workingArea" class="div">
 	<ul class="breadcrumb">
-		<li><a href="admin_new_list">资讯</a></li>
-		<li><a href="#">修改图片</a></li>
+		<li><a href="admin_category_list">网站分类</a></li>
+		<li><a :href="'admin_web_list?cid='+category.id">{{category.name}}</a></li>
+		<li><a href="#">{{bean.name}}</a></li>
 	</ul>
 	<div class="panel panel-warning editDiv">
 		<div class="panel-heading">修改图片(图片尺寸50*50)</div>

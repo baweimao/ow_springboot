@@ -62,7 +62,6 @@ public class SocialController {
 	
 	@DeleteMapping("/socials/{id}")
 	public Object delete(@PathVariable("id") int id) throws Exception{
-		socialService.delete(id);
 		Social s = socialService.get(id);
 		int pid = s.getPeople().getId();
 		List<Social> ss = socialService.listByPeople(pid);
@@ -75,6 +74,7 @@ public class SocialController {
 				socialService.update(se);
 			}
 		}
+		socialService.delete(id);
 		return Result.success("");
 	}
 	

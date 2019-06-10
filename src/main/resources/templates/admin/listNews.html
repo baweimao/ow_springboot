@@ -67,11 +67,16 @@ $(function(){
                     formData.append("web",this.bean.web.id);
                 }
                 axios.post(url,formData).then(function(response){
-                    vue.bean = {id:0, title:'', url:'', content:'', web:{id:''}};
-                    file:null;
-                    list(0);
-//                     this.$router.go(0);
-//                     location.reload();
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.bean = {id:0, title:'', url:'', content:'', web:{id:''}};
+                        vue.file = null;
+                        vue.list(0);
+                        location.reload();
+                	}
                 });
             },
             deleteBean:function(id){
@@ -298,7 +303,7 @@ $(function(){
                 </tr>
                 <tr>
                     <td class="name">内容</td>
-                    <td><textarea wrap="virtual" id="content" @keyup.enter="add" v-model="bean.content" type="text" class="form-control"></textarea></td>
+                    <td><textarea wrap="virtual" id="content" v-model="bean.content" type="text" class="form-control"></textarea></td>
                 </tr>
                 <tr>
                     <td class="name">图片</td>

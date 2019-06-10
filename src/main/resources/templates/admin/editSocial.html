@@ -9,9 +9,9 @@ $(function(){
     var data4Vue = {
         uri:'socials',
         listURL:'admin_social_list',
-        bean:{id:0, url:'', web:{id:0}, people:{id:0}},
-        type:'',
-        people:''
+        bean:{id:0, url:''},
+        people:'',
+        web:''
     };
 
     var vue = new Vue({
@@ -19,7 +19,6 @@ $(function(){
         data:data4Vue,
         mounted:function(){
             this.get();
-            this.getType();
             $('#name').on('input',checkEn(12));
         },
         methods:{
@@ -47,9 +46,9 @@ $(function(){
 <div id="workingArea" class="div">
 	<ul class="breadcrumb">
 		<li><a href="admin_type_list">人物分类</a></li>
-		<li><a :href="'admin_people_list?tid='+type.id">{{type.name}}</a></li>
+		<li><a :href="'admin_people_list?tid='+people.type.id">{{people.type.name}}</a></li>
 		<li><a :href="'admin_social_list?pid='+people.id">{{people.name}}社交</a></li>
-		<li><a>编辑社交</a></li>
+		<li><a href="#">{{web.name}}</a></li>
 	</ul>
 	<div class="panel panel-warning editDiv">
 		<div class="panel-heading">编辑社交(微信网址填写公众号)</div>

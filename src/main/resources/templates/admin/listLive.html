@@ -52,8 +52,15 @@ $(function(){
                 var formData = new FormData();
                 this.bean.game.id = gid;
                 axios.post(url,this.bean).then(function(response){
-                    vue.list();
-                    vue.bean = {id:0, url:'', game:{id:0}, web:{id:0}};
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list();
+                        vue.bean = {id:0, url:'', game:{id:0}, web:{id:0}};
+                        location.reload();
+                	}
                 });
             },
             deleteBean:function(id){

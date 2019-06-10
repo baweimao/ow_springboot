@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.persistence.criteria.Order;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -136,7 +138,7 @@ public class GameService {
 		
 		for(Game g:gs) {
 			int gid = g.getId();
-			List<Ranks> rs = ranksService.listByGame(gid);
+			List<Ranks> rs = ranksService.listByGameAndOrderNot(gid, ranksService.hide);
 			g.setRs(rs);
 		}
 	}

@@ -63,8 +63,15 @@ $(function(){
                 this.bean.game.id = gid;
                 this.bean.gameDate = date;
                 axios.post(url,this.bean).then(function(response){
-                    vue.list(0);
-                    vue.bean = {id:0,gameDate:'', ranks_a:{id:0}, ranks_b:{id:0}, game:{id:0}};
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list(0);
+                        vue.bean = {id:0,gameDate:'', ranks_a:{id:0}, ranks_b:{id:0}, game:{id:0}};
+                        location.reload();
+                	}
                 });
             },
             deleteBean:function(id){

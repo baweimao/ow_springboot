@@ -51,9 +51,16 @@ $(function(){
                 formData.append("url",this.bean.url);
                 formData.append("category",this.bean.category.id);
                 axios.post(url,formData).then(function(response){
-                    vue.list();
-                    vue.bean = {id:0, name:'', url:'', category:{id:0}};
-                    vue.file = null;
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list();
+                        vue.bean = {id:0, name:'', url:'', category:{id:0}};
+                        vue.file = null;
+                        location.reload();
+                	}
                 });
             },
             deleteBean:function(id){

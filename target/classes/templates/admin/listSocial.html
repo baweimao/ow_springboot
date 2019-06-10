@@ -54,9 +54,16 @@ $(function(){
                 var url = this.uri;
                 this.bean.people.id = pid;
                 axios.post(url,this.bean).then(function(response){
-                    vue.list();
-                    vue.bean = {id:0, url:'', web:{id:0}, people:{id:0}};
-                    vue.file = null;
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list();
+                        vue.bean = {id:0, url:'', web:{id:0}, people:{id:0}};
+                        vue.file = null;
+                        location.reload();
+                	}
                 });
             },
             deleteBean:function(id){

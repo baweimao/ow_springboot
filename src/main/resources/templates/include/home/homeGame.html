@@ -29,7 +29,7 @@
 		<div class="gameTop backgroundC">
 			<span class="gameName"><a :href="g.url" target="_blank">{{g.name}}</a></span>
 			<span class="gameLive">直播平台：</span>
-			<span>
+			<span class="gameLiveImg">
 				<a v-for="l in g.ls" :href="l.url" target="_blank">
 					<img :src="'img/webLogo/'+l.web.id+'.jpg'">
 				</a>

@@ -9,7 +9,7 @@ $(function(){
     var data4Vue = {
         uri:'lives',
         listURL:'admin_live_list',
-        bean:{id:0, url:'', game:{id:0}, web:{id:0}},
+        bean:{id:0, url:''},
         game:''
     };
 
@@ -44,11 +44,11 @@ $(function(){
 	<ul class="breadcrumb">
 		<li><a href="admin_game_list">赛事</a></li>
 		<li><a :href="'admin_live_list?gid='+game.id">{{game.name}}直播</a></li>
-		<li><a href="#">编辑直播</a></li>
+		<li><a href="#">{{bean.web.name}}</a></li>
 	</ul>
 
 	<div class="panel panel-warning editDiv">
-		<div class="panel-heading">编辑赛事直播</div>
+		<div class="panel-heading">编辑直播</div>
 		<div class="panel-body">
             <table class="addTable">
                 <tr>

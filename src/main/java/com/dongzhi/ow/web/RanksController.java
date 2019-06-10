@@ -210,6 +210,7 @@ public class RanksController {
 			}
 		}
 		bean.setRanksOrder(0);
+		System.out.println(bean.getRanksOrder());
 		ranksService.update(bean);
 		return Result.success();
 	}

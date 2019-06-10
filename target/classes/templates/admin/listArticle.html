@@ -67,6 +67,7 @@ $(function(){
                 	else{
                 		vue.list(0);
                         vue.bean = {id:0, title:'', url:'', remark:'', content:'', web:{id:''}};
+                        location.reload();
                 	}
                 });
             },
@@ -310,7 +311,7 @@ $(function(){
                         <a @click="recommend(bean.id)" href="#"><span class="glyphicon glyphicon-star-empty"></span></a>
                     </td>
                     <td>
-                        <a @click="art(bean.id)" href="#"><span class="glyphicon glyphicon-star-empty"></span></a>
+                        <a @click="top(bean.id)" href="#"><span class="glyphicon glyphicon-star-empty"></span></a>
                     </td>
                     <td v-if="bean.articleOrder==0">
                         <a @click="show(bean.id)" href="#"><span class="glyphicon glyphicon-eye-close"></a>

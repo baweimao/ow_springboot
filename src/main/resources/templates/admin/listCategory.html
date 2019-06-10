@@ -30,8 +30,15 @@ $(function(){
                     return;
                 var url = this.uri;
                 axios.post(url,this.bean).then(function(response){
-                    vue.list();
-                    vue.bean = {id:0, name:''};
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+	                	vue.list();
+	                    vue.bean = {id:0, name:''};
+	                    location.reload();
+                	}
                 });
             },
             deleteBean:function(id){

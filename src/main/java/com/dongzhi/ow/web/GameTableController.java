@@ -50,6 +50,8 @@ public class GameTableController {
 	
 	@PostMapping("/gametables")
 	public Object add(@RequestBody GameTable bean) throws Exception {
+		System.out.println(bean.getRanks_a().getId());
+		System.out.println(bean.getRanks_b().getId());
 		gameTableService.add(bean);
 		return Result.success(bean);
 	}

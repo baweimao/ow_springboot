@@ -4,7 +4,16 @@
 	<p>最新动态</p>
 </div>
 <div class="homeNews">
-	<div class="leftNews" :style="'background-image:url(img/news/'+n.id+'.jpg)'">
+	<div v-if="n.img==1" class="leftNews" :style="'background-image:url(img/news/'+n.id+'.jpg)'">
+		<div class="backgroundUp backgroundE"></div>
+		<div class="backgroundDown backgroundE"></div>
+		<p>{{n.content}}</p>
+		<div class="logoTitle">
+			<img :src="'img/webLogo/'+n.wid+'.jpg'">
+			<a>{{n.title}}</a>
+		</div>
+	</div>
+	<div v-if="n.img!=1" class="leftNews" :style="'background-image:url(img/news/01.jpg)'">
 		<div class="backgroundUp backgroundE"></div>
 		<div class="backgroundDown backgroundE"></div>
 		<p>{{n.content}}</p>

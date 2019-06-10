@@ -48,8 +48,15 @@ $(function(){
                 formData.append("name",this.bean.name);
                 formData.append("game",this.bean.game.id);
                 axios.post(url,formData).then(function(response){
-                    vue.list();
-                    vue.bean = {id:0, name:'', game:{id:0}};
+                	var result = response.data;
+                	if(0!=result.code){
+                		alert(result.message);
+                	}
+                	else{
+                		vue.list();
+                        vue.bean = {id:0, name:'', game:{id:0}};
+                        location.reload();
+                	}
                 });
             },
             deleteBean:function(id){

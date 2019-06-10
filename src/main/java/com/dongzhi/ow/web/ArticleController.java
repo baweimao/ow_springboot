@@ -102,7 +102,6 @@ public class ArticleController {
 	public Object top(@PathVariable("id") int id) throws Exception{
 		Article a = articleService.get(id);
 		int up = a.getUp();
-		
 		//如果原表是推荐循环减1
 		if(up == articleService.recommend) {
 			List<Article> as = articleService.listByUp(up);//获取列表

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="include/admin/adminHeader::html(编辑页面)"></head>
 <body>
-<div th:replace="include/admin/adminNavigtor::html"></div>
+<div th:replace="include/admin/adminNavigator::html"></div>
 <script>
 $(function(){
     var id = getUrlParms("id");
@@ -37,7 +37,7 @@ $(function(){
 <div id="workingArea" class="div">
 	<ul class="breadcrumb">
 		<li><a href="admin_page_list">页面</a></li>
-		<li><a href="#">修改图片</a></li>
+		<li><a href="#">背景图</a></li>
 	</ul>
 	<div class="panel panel-warning editDiv">
 		<div class="panel-heading">修改图片</div>
